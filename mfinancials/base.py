@@ -1,19 +1,16 @@
 #!/usr/bin/env python
-# TODO: Improve README
-# TODO: b-shares handler
-# TODO: Improve REIT functions add normal multiple
 
 import params
 import utils
 
+import datetime
+import re
+import json
+
 from bs4 import BeautifulSoup
 from numpy import nan
 
-import datetime
-import re
 import requests
-import json
-import datetime
 
 import pandas as pd
 import yfinance as yf
