@@ -1,8 +1,8 @@
-from base import TickerBase
-from ticker import Ticker
+from .base import TickerBase
+from .ticker import Ticker
 
-import params
-import utils
+from . import params
+from . import utils
 
 from bs4 import BeautifulSoup
 from numpy import nan

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from base import TickerBase
+from .base import TickerBase
 
-import params
-import utils
+from . import params
+from . import utils
 
 import datetime
 import re
@@ -24,15 +24,20 @@ class Ticker(TickerBase):
 
     @property
     def financials(self):
-        return self.get_financials()
+        return self._get_financials()
 
     @property
     def estimates(self):
-        return self.get_estimates()
+        return self._get_estimates()
 
     @property
     def keyRatios(self):
-        return self.get_keyRatios()
+        return self._get_keyRatios()
+    
+    @property
+    def estimatesConv(self):
+        return self._get_estimatesConv()
 
 if __name__ == "__main__":
     aapl = Ticker("AAPL")
+    

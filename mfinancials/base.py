@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import params
-import utils
+from . import params
+from . import utils
 
 import datetime
 import re
@@ -16,7 +16,14 @@ import pandas as pd
 import yfinance as yf
 
 class TickerBase():
-    def __init__(self, ticker, country="USA"):
+    def __init__(self, ticker, country="USA", mic=None):
+
+        self.countries = list(params.exchanges.keys())
+        if country in self.countries:
+            self.country = country
+        else:
+            raise ValueError(f"Country {country} not supported. Use .countries to list supported countries.")
+
         self.ticker = ticker.upper()
         self._url_base = 'http://financials.morningstar.com/finan/financials/'
         self._url_financialsBase = self._url_base + 'getFinancePart.html?&callback=xxx&t={}'
@@ -26,19 +33,22 @@ class TickerBase():
         self._currencies = params.currencies
         self._exchanges = params.exchanges
 
-        self.countries = list(params.exchanges.keys())
-        self.country = country
-
-        self.mic = self._exchanges[self.country]
+        self.mic = mic if mic is not None else self._exchanges[self.country]
         self._ticker_full = f"{self.mic}:{self.ticker}"
 
         self._url_financials = self._url_financialsBase.format(self._ticker_full)
         self._url_keyRatios = self._url_keyRatiosBase.format(self._ticker_full)
         self._url_est =  self._url_estBase.format(self._ticker_full)
 
+        self._url_financialsBase = 'http://financials.morningstar.com/ratios/r.html?t={}'
+        self.url_financials = self._url_financialsBase.format(self._ticker_full)
+        self._url_estimatesBase = 'http://financials.morningstar.com/valuation/earnings-estimates.html?t={}'
+        self.url_estimates = self._url_estimatesBase.format(self._ticker_full)
+        
         self._financials = None
         self._keyRatios = None
         self._estimates = None
+        self._estimatesConv = None
 
         self.currency_financials = None
         self.currency_estimates = None
@@ -128,6 +138,9 @@ class TickerBase():
             [type]: [description]
         """
 
+        if self._estimates is not None:
+            return
+
         df = pd.read_html(self._url_est)[0]
 
         df = df.dropna(how='all', axis=0)
@@ -144,6 +157,7 @@ class TickerBase():
 
         currency_est = df.index[0][1]
         df.rename_axis(index={"Estimates": f"Estimates {currency_est}"})
+
         df = df.astype(float, errors='ignore')
         df.loc[:,"Number of Estimates"] = df.loc[:,"Number of Estimates"].bfill()
         df.loc[:,"Number of Estimates"] = df.loc[:,"Number of Estimates"].astype(pd.Int64Dtype(), errors='ignore')
@@ -158,25 +172,32 @@ class TickerBase():
         df.index = utils.rename_MultiIndex(df.index, currency_est)
 
         self._estimates = df
+        self.currency_estimates = currency_est
 
 
-    def _conv_currency(self):
+    def _conv_estimates(self):
+
+        if self._estimatesConv is not None:
+            return
 
         if self.currency_financials is None:
-            print("Can't convert estimate currency, please get finacials data first.")
+            print("Can't convert estimates, please get finacials data with .financials")
             return
         
         elif self.currency_estimates is None:
-            print("Can't convert estimate currency, please get estimate data first.")
+            print("Can't convert estimates, please get estimate data with .estimtes")
+            return
+
+        elif self.currency_estimates == self.currency_financials:
+            print("Estimate currency identical to financials currency")
             return
 
         currency_from = self.currency_estimates
         currency_to = self.currency_financials
 
-        if self._estimates is not None:
-            return
-        
-        df = self._estimates
+        print(f"Converting estimates from {currency_from} to {currency_to}")
+
+        df = self._estimates.copy()
 
         columns = df.columns[:-1]
         rows = ~df.index.get_level_values(1).str.contains("%")
@@ -202,22 +223,35 @@ class TickerBase():
 
         df.index = utils.rename_MultiIndex(df.index, currency_to)
 
-        return df
+        self._estimatesConv = df
 
-    def get_financials(self):
-        self._get_annualData("financials")
+    def _get_financials(self):
+        try:
+            self._get_annualData("financials")
+        except Exception:
+            print(f"Unable to get financials data for {self._ticker_full}\nCheck {self.url_financials}")
         return self._financials
 
-    def get_keyRatios(self):
-        self._get_annualData("keyRatios")
+    def _get_keyRatios(self):
+        try:
+            self._get_annualData("keyRatios")
+        except Exception:
+            print(f"Unable to get keyRatios data for {self._ticker_full}\nCheck {self.url_financials}")
         return self._keyRatios
 
-    def get_estimates(self):
-        self._get_estimateData()
+    def _get_estimates(self):
+        try:
+            self._get_estimateData()
+        except Exception:
+            print(f"Unable to get estimate data for {self._ticker_full}\nCheck {self.url_estimates}")
         return self._estimates
+
+    def _get_estimatesConv(self):
+        self._conv_estimates()
+        return self._estimatesConv
 
 if __name__ == "__main__":
     aapl = TickerBase("AAPL")
-    aapl.get_keyRatios()
+    aapl._get_keyRatios()
 
 
