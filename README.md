@@ -21,8 +21,10 @@ python setup.py install
 ### Basic usage
 
 ```python
+import mfinancials as mf
+
 # Apple, Inc.
-aapl = Ticker("AAPL")
+aapl = mf.Ticker("aapl")
 
 # financials from http://financials.morningstar.com/ratios/r.html?t=aapl
 aapl.financials
@@ -50,10 +52,10 @@ It is generally advised to use country, mic only for not supported countries.
 
 ```python
 # LVMH Moët Hennessy – Louis Vuitton SE
-lvmh = Ticker("mc", mic="XPAR")
+lvmh = mf.Ticker("mc", mic="XPAR")
 
 # Samsung Electronics Co., Ltd.
-smsng = Ticker("005930", country="South Korea")
+smsng = mf.Ticker("005930", country="South Korea")
 
 # list supported countries
 smsng.countries
@@ -62,7 +64,8 @@ smsng.countries
 Some estimate data is in a different currency than the financials currency. To convert estimates use:
 
 ```python
-baba = Ticker("baba")
+# Alibaba Group Holding Limited
+baba = mf.Ticker("baba")
 baba.financials
 baba.estimates
 baba.estimatesConv
