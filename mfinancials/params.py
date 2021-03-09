@@ -123,7 +123,7 @@ exchanges_untested = {
     'USA_XNCM': 'XNCM',
     'USA_OOTC': 'OOTC',
     'USA_XNGS': 'XNGS',
-    'USA': '',
+    'USA': None,
     'Vietnam': 'XSTC',
     'Vietnam_HSTC': 'HSTC'
 }

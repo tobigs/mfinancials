@@ -34,7 +34,7 @@ class TickerBase():
         self._exchanges = params.exchanges
 
         self.mic = mic if mic is not None else self._exchanges[self.country]
-        self._ticker_full = f"{self.mic}:{self.ticker}"
+        self._ticker_full = ticker if mic is None else f"{self.mic}:{self.ticker}"
 
         self._url_financials = self._url_financialsBase.format(self._ticker_full)
         self._url_keyRatios = self._url_keyRatiosBase.format(self._ticker_full)
