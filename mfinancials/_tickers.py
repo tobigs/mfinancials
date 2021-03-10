@@ -1,17 +1,18 @@
+#!/usr/bin/env python
+
 from .base import TickerBase
-from .ticker import Ticker
 
 from . import params
 from . import utils
 
+import datetime
+import re
+import json
+
 from bs4 import BeautifulSoup
 from numpy import nan
 
-import datetime
-import re
 import requests
-import json
-import datetime
 
 import pandas as pd
 import yfinance as yf

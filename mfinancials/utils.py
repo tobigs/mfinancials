@@ -9,6 +9,15 @@ def empty_df(index=[]):
     
 
 def rename_MultiIndex(index, rename):
+    """Renames first, third MultiIndex entry on second level
+
+    Args:
+        index (pd.MultiIndex): Multiindex to rename
+        rename (string): Currency to insert in Multiindex
+
+    Returns:
+        pd.MultiIndex: renamed MulitIndex
+    """    
 
     result = []
 
@@ -25,16 +34,24 @@ def rename_MultiIndex(index, rename):
 
 def flatten(mylist):
 
-    flat_list = [item for sublist in mylist for item in sublist]
+    list_flat = [item for sublist in mylist for item in sublist]
 
-    return flat_list
+    return list_flat
 
 
 def get_table(soup):
+    """Extracts tables as list of lists from bs4.BeautifulSoup
 
-    mylist= []
+    Args:
+        soup (bs4.BeautifulSoup): Soup to extract tables from
 
-    for i, tr in enumerate(soup.select('tr')):
+    Returns:
+        list: List of lists
+    """    
+
+    list_result = []
+
+    for tr in soup.select('tr'):
         row_data = [td.text for td in tr.select('td, th') if td.text]
 
         if not row_data:
@@ -43,6 +60,6 @@ def get_table(soup):
         if len(row_data) < 12:
             row_data = ['X'] + row_data
 
-        mylist.append(row_data)
+        list_result.append(row_data)
 
-    return mylist
+    return list_result

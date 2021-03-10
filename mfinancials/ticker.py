@@ -37,7 +37,3 @@ class Ticker(TickerBase):
     @property
     def estimatesConv(self):
         return self._get_estimatesConv()
-
-if __name__ == "__main__":
-    aapl = Ticker("AAPL")
-    

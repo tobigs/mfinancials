@@ -32,7 +32,7 @@ aapl.financials
 # key ratios from from http://financials.morningstar.com/ratios/r.html?t=aapl
 aapl.keyRatios
 
-# estimates from financials.morningstar.com/valuation/earnings-estimates.html?t=AAPL
+# estimates from financials.morningstar.com/valuation/earnings-estimates.html?t=aapl
 aapl.estimates
 
 # display like morningstar website
@@ -42,7 +42,7 @@ aapl.estimates.T
 
 # get urls to view data on morningstar website
 aapl.url_estimates
-aap.url_financials
+aapl.url_financials
 ```
 
 ### Non-US stocks
