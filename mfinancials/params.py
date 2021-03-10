@@ -1,7 +1,7 @@
 # https://stockmarketmba.com/globalstockexchanges.php
 
 exchanges = {
-    'USA': '',
+    'USA': None,
     'Germany': 'XETR',
     'Hong Kong': 'XHKG',
     'Japan': 'XTKS',
