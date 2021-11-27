@@ -6,7 +6,7 @@ Simple module for downloading financial statements and estimates from financials
 Install using pip:
 
 ```
-pip install --extra-index-url https://test.pypi.org/simple/ mfinancials
+pip install mfinancials
 ```
 or install from source:
 
